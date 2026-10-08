@@ -14,18 +14,20 @@ function Test() {
 }
 
 function GetPrice(id, cc) {
-  let response = UrlFetchApp.fetch(
-    "https://store.steampowered.com/app/" + id + "/?cc=" + cc
-  );
-  let text = response.getContentText("utf-8");
-  let base = Parser.data(text)
-    .from('class="game_purchase_price price"')
-    .to(">")
-    .build();
-  console.log(base);
-  let price = 0;
-  if (base.includes("data-price-final")) {
-    price = base.split('"')[1] / 100;
+  let url =
+    "https://store.steampowered.com/api/appdetails?appids=" +
+    encodeURIComponent(id) +
+    "&cc=" +
+    encodeURIComponent(cc) +
+    "&filters=price_overview";
+  try {
+    let data = JSON.parse(UrlFetchApp.fetch(url).getContentText());
+    let app = data[id];
+    if (app && app.success && app.data.price_overview) {
+      return app.data.price_overview.final / 100;
+    }
+  } catch (error) {
+    console.error(error);
   }
-  return price;
+  return 0;
 }
