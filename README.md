@@ -16,6 +16,3 @@ https://script.google.com/macros/s/AAAAAA/exec?id=105600&cc=us
 
 - Google Apps Script
 
-## Libraries
-
-- Parser
